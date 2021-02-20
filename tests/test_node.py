@@ -31,16 +31,14 @@ class Sum(Node):
     @make_node
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.inner_node = None
-        for arg in args:
-            if self.inner_node is None:
-                self.inner_node = arg
-            else:
-                self.inner_node = Add(arg, self.inner_node)
+        self.args = args
 
 
     def evaluate(self):
-        return self.inner_node.value() if self.inner_node is not None else 0
+        sum = 0
+        for arg in self.args:
+            sum += arg.value()
+        return sum
 
 
 class TestNode(unittest.TestCase):
@@ -69,6 +67,15 @@ class TestNode(unittest.TestCase):
         c = Factorial(3, name = 'F3!')
         d = Factorial(4, name = 'F4!')
         result = Sum(a, b, c, d)
+        self.assertEqual(33, result.value())
+
+
+    def test_add_tree(self):
+        a = Factorial(1, name = 'F1!')
+        b = Factorial(2, name = 'F2!')
+        c = Factorial(3, name = 'F3!')
+        d = Factorial(4, name = 'F4!')
+        result = Add(Add(a, b), Add(c, d))
         self.assertEqual(33, result.value())
 
 

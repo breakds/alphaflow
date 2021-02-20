@@ -1,4 +1,5 @@
 from functools import wraps
+from graphviz import Digraph
 
 
 def make_node(init):
@@ -8,7 +9,7 @@ def make_node(init):
     @wraps(init)
     def new_init(self, *args, **kwargs):
         init(self, *args, **kwargs)
-        for arg_name, arg_value in zip(arg_names[1:], args):
+        for arg_value in args:
             # Special handling for list for one level
             if type(arg_value) is list:
                 for element in arg_value:
@@ -61,3 +62,25 @@ class Node(object):
             self.cached_result = self.evaluate()
             self.realized = True
         return self.cached_result
+
+
+    def get_dag(self):
+        dot = Digraph()
+        stack = [self]
+        all_nodes = set()
+        while len(stack) > 0:
+            current = stack.pop()
+            if current in all_nodes:
+                continue
+            all_nodes.add(current)
+            for dep in current.dependencies:
+                dot.edge(f'n{id(dep)}', f'n{id(current)}')
+                if dep not in all_nodes:
+                    stack.append(dep)
+
+        for node in all_nodes:
+            dot.node(f'n{id(node)}', node.name)
+
+        return dot
+            
+            
