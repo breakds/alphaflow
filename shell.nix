@@ -8,8 +8,9 @@ let pkgs = import (builtins.fetchTarball {
       let computation = [
             numpy pandas
           ];
-          viz = [ matplotlib tqdm ];
-      in computation ++ viz);
+          ide = [ jupyterlab ipywidgets ipydatawidgets ];
+          viz = [ matplotlib tqdm graphviz];
+      in computation ++ ide ++ viz);
 
 in pkgs.mkShell rec {
   name = "alphaflow";
