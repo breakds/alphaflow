@@ -54,8 +54,10 @@ class Node(object):
         if issubclass(type(dep), Node):
             self.dependencies.append(dep)
 
+
     def evaluate(self):
         pass
+
 
     def value(self):
         if not self.realized:

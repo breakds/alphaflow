@@ -1,7 +1,7 @@
 import unittest
 import math
 
-from alphaflow import Node, make_node
+from alphaflow import Node, make_node, Constant
 
 
 class Factorial(Node):
@@ -77,6 +77,11 @@ class TestNode(unittest.TestCase):
         d = Factorial(4, name = 'F4!')
         result = Add(Add(a, b), Add(c, d))
         self.assertEqual(33, result.value())
+
+
+    def test_constant_node(self):
+        a = Constant('Great!')
+        self.assertEqual('Great!', a.value())
 
 
 if __name__ == '__main__':
