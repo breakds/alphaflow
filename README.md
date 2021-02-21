@@ -46,10 +46,10 @@ def create_recursive_sum(*args):
 Actually make use of the nodes to build computational graph.
 
 ```python
-a = Factorial(5, name = 'F5!')
-b = Factorial(6, name = 'F6!')
-c = Factorial(6, name = 'F7!')
-d = Factorial(6, name = 'F8!')
+a = Factorial(1, name = 'F1!')
+b = Factorial(2, name = 'F2!')
+c = Factorial(3, name = 'F3!')
+d = Factorial(4, name = 'F4!')
 result = create_recursive_sum(a, b, c, d)
 ```
 
