@@ -67,7 +67,7 @@ class Node(object):
 
 
     def get_dag(self):
-        dot = Digraph()
+        dot = Digraph(format = 'png')
         stack = [self]
         all_nodes = set()
         while len(stack) > 0:
