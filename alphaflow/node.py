@@ -7,6 +7,16 @@ from .scheduler import Scheduler
 
 
 def make_node(init):
+    """The decorator for __init__ of all the Node derived class.
+
+    This decorator mainly serves two purposes.
+
+    1) Pick up the meaning ful keyword argument such as `name`
+
+    2) Detect the inputs whose class is derived from Node and add them
+       to the dependency list automatically
+
+    """
     import inspect
     arg_names = inspect.getargspec(init)[0]
 
@@ -20,7 +30,8 @@ def make_node(init):
                     self._try_add_dep(element)
             else:
                 self._try_add_dep(arg_value)
-            
+
+        # The name of the node will be set to its class name if not specified.
         node_name = self.__class__.__name__
         
         for arg_name, arg_value in kwargs.items():
@@ -40,16 +51,25 @@ class Node(object):
     """
 
     def __init__(self):
-        # TODO(breakds): Use a enum to represent different status such
-        # as RUNNING and REALIZED.
+        # Default value for the name. This will be override as soon as
+        # the @make_node decorator is applied.
         self.name = 'NONAME'
+
+        # Will be set to True once the node is evaluated.
         self.realized = False
+
+        # Will hold the final result of the evaluation after the node
+        # is evaluated.
         self.cached_result = None
+
+        # This will be automatically populated by @make_node decorator
+        # to memorize all the dependencies of this node
         self.dependencies = []
 
 
     def _set_name(self, name):
-          self.name = name
+        """Set the name of the node."""
+        self.name = name
     
 
     def _try_add_dep(self, dep):
@@ -60,10 +80,15 @@ class Node(object):
 
 
     def evaluate(self):
+        """Override this to implement the actual node logic."""
         pass
 
 
     def _ensure_evalauted(self):
+        """Internal helper function evluate this node if it is not yet.
+
+        The evaluation make uses of the (global) Scheduler.
+        """
         if self.realized:
             return
 
@@ -77,11 +102,18 @@ class Node(object):
 
 
     def value(self):
+        """Access the evaluated result.
+
+        If the node is not evaluated yet, calling value() will force it to be
+        evalauted.
+
+        """
         self._ensure_evalauted()
         return self.cached_result
 
 
     def get_dag(self):
+        """Access the DAG that visualize the dependencies."""
         dot = Digraph(format = 'png')
         stack = [self]
         all_nodes = set()
