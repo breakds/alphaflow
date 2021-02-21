@@ -1,5 +1,9 @@
 from functools import wraps
+import concurrent.futures
+
 from graphviz import Digraph
+
+from .scheduler import Scheduler
 
 
 def make_node(init):
@@ -59,10 +63,21 @@ class Node(object):
         pass
 
 
+    def _ensure_evalauted(self):
+        if self.realized:
+            return
+
+        running = []
+        for dep in self.dependencies:
+            if not dep.realized:
+                running.append(Scheduler().submit(dep._ensure_evalauted, dep))
+        concurrent.futures.wait(running)
+        self.cached_result = self.evaluate()
+        self.realized = True
+
+
     def value(self):
-        if not self.realized:
-            self.cached_result = self.evaluate()
-            self.realized = True
+        self._ensure_evalauted()
         return self.cached_result
 
 
