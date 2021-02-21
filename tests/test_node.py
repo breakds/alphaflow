@@ -100,7 +100,7 @@ class TestNode(unittest.TestCase):
         b = Factorial(2, name = 'F2!')
         c = Factorial(3, name = 'F3!')
         d = Factorial(4, name = 'F4!')
-        result = Sum(a, b, c, d)
+        result = create_recursive_sum(a, b, c, d)
         self.assertEqual(33, result.value())
 
 
