@@ -59,6 +59,6 @@ Visualize the computation graph.
 result.get_dag()
 ```
 
-![generated dag](/images/Digraph.gv.pdf)
+![generated dag](/images/sum.png)
 
 
